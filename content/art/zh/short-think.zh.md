@@ -1,6 +1,7 @@
 ---
 title: 我的阅读写作工具
 date: 2023-03-21T21:35:00+08:00
+slug: short-think
 tags: ["reading", "writing"]
 series: ["reading-writing"]
 image: "https://storage.guangzhengli.com/images/ladder-theme.png"

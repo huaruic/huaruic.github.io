@@ -10,6 +10,10 @@ defaultContentLanguage: 'zh'
 pagination:
   pagerSize: 10
 hasCJKLanguage: true
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
 copyright: "2023 ErnestChen All rights reserved"
 Author:
   name: "Ernest Chen" 
@@ -31,16 +35,16 @@ params:
     title: Sponsors
     description: Support me by becoming a sponsor
     buymeaCoffee:
-      enable: true
-      url: https://www.buymeacoffee.com/iguangzhengli
-      button_api: https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=iguangzhengli&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff
-      qr: https://storage.guangzhengli.com/images/buymeacoffee_sponsors.png
+      enable: false
+      url:
+      button_api:
+      qr:
     wechat:
-      enable: true
-      qr: https://storage.guangzhengli.com/images/alipay_sponsors.jpeg
+      enable: false
+      qr:
     alipay:
-      enable: true
-      qr: https://storage.guangzhengli.com/images/weixin_sponsors.jpeg
+      enable: false
+      qr:
   comments:
     giscus:
       enable: true
@@ -57,7 +61,7 @@ params:
       issueTerm:
   analytics:
     google:
-      SiteVerificationTag: xxx 
+      SiteVerificationTag:
     umami:
       enable: true 
       website_id: f3deb06c-5a53-49a7-a8e1-b4ce23c412ba 
@@ -84,7 +88,7 @@ languages:
         - name: Blog
           url: /blog
           weight: 1
-        - name: shortThink
+        - name: Notes
           url: /art
           weight: 2
         - name: Archive

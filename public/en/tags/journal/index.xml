@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Journal on Always Exploring</title>
+    <link>http://localhost:1313/en/tags/journal/</link>
+    <description>Recent content in Journal on Always Exploring created by </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>2023 ErnestChen All rights reserved</copyright>
+    <lastBuildDate>Wed, 20 Jul 2022 23:00:37 +0800</lastBuildDate><atom:link href="http://localhost:1313/en/tags/journal/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Notes from a Messy Day at Work</title>
+      <link>http://localhost:1313/en/blog/en/22-07-20/</link>
+      <pubDate>Wed, 20 Jul 2022 23:00:37 +0800</pubDate>
+      
+      <guid>http://localhost:1313/en/blog/en/22-07-20/</guid>
+      <description>&lt;p&gt;I missed my massage appointment because of meetings today. At one point I could clearly feel how the number of tasks, and the sheer messiness of them, compressed my sense of time. It had also been a while since I last handled a new requirement directly, so once I got back into it I noticed a lot of small details I had not considered carefully enough.&lt;/p&gt;
+&lt;p&gt;I still need to go deeper on solution design and workflow thinking. That means not only implementing our own side better, but also asking why a process is designed the way it is, how other teams&amp;rsquo; links in the chain work, and what tradeoffs they are making. I think this is the only way to improve system design ability in a durable way: understand the full path, find what is unreasonable, and then try to fix it. Complaining is easy. Taking initiative to face problems and solve them is what actually builds capability.&lt;/p&gt;
+&lt;p&gt;Today I fixed bugs raised by QA and continued decoupling the &amp;ldquo;create / cancel interception&amp;rdquo; flow. Looking back, I keep wondering whether this should be abstracted into interfaces or structs that separate creation, update, RPC calls, and logging. It may not be worth changing immediately, but it is at least worth evaluating. I also revisited whether RPC calls that are currently executed one by one in a loop should be moved to concurrent execution.&lt;/p&gt;
+&lt;p&gt;The export function is also only partially settled. The shipper side now exports correctly after fixing the field issue, but the merchant side still needs verification because the page claims export success while the query result does not show the record. That needs investigation. The grey release plan is another key item that still needs careful confirmation.&lt;/p&gt;
+&lt;p&gt;I had a forty-minute discussion today and felt how easily I can be affected by other people&amp;rsquo;s language when my thoughts are still messy. In that kind of situation, I should first make sure I understand the problem, then reason through it with explicit assumptions: what is feasible, what is not, and why. No solution is perfect. Sometimes the right answer is not even a technical one. If others can see an angle that I miss, then I need to ask what gap in my thinking caused that. That is where growth actually happens.&lt;/p&gt;
+&lt;p&gt;Current follow-up items:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Evaluate whether create/cancel logic should be abstracted further&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Verify the newly added online logic for &lt;code&gt;setExpress&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Prepare and execute one-time PPE data patching carefully&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Finish the release checklist for production&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Move the &lt;code&gt;lo&lt;/code&gt; calls to concurrent execution&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Finalize the grey release control logic&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Confirm export behavior across all three clients&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

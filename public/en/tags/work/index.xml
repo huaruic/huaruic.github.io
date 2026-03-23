@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Work on Always Exploring</title>
+    <link>http://localhost:1313/en/tags/work/</link>
+    <description>Recent content in Work on Always Exploring created by </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>2023 ErnestChen All rights reserved</copyright>
+    <lastBuildDate>Wed, 25 Oct 2023 23:55:37 +0800</lastBuildDate><atom:link href="http://localhost:1313/en/tags/work/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Only Practical Meaning of Work Is to Make Money</title>
+      <link>http://localhost:1313/en/blog/en/why-work/</link>
+      <pubDate>Wed, 25 Oct 2023 23:55:37 +0800</pubDate>
+      
+      <guid>http://localhost:1313/en/blog/en/why-work/</guid>
+      <description>&lt;h3 id=&#34;work-is-not-where-i-look-for-salvation&#34;&gt;Work Is Not Where I Look for Salvation&lt;/h3&gt;
+&lt;p&gt;When I was younger, I wanted work to satisfy almost everything at once. I wanted self-worth, fast growth, visible achievement, and approval from leaders and colleagues.&lt;/p&gt;
+&lt;p&gt;Now my standard is much simpler and much more practical: pay me on time, do not damage my interests, and let me keep enough clarity and energy for the rest of life. I listen to managers selectively. I try not to waste too much emotion on office politics. Colleagues do not have to become intimate friends. If we get along, good. If not, that is also fine.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Work is mainly a way to make money. Money then buys room, freedom, and the ability to build a more meaningful life elsewhere.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Many people work in order to live, but then gradually let work consume the life they were trying to support. They become controlled by the job, emotionally pulled around by every conflict, every review, every change in tone from a manager.&lt;/p&gt;
+&lt;p&gt;Whenever I hit a breaking point at work, my first impulse is still emotional: &amp;ldquo;Fine, then I quit.&amp;rdquo; But after the emotion settles, I try to step back and ask calmer questions. What is the worst realistic outcome? What choices do I actually have? What are the tradeoffs? What challenge would follow each choice, and can I handle it?&lt;/p&gt;
+&lt;p&gt;From a longer time horizon, work loses some of its power to trap the mind. Jobs are replaceable. Projects succeed or fail for reasons far beyond any one person. The important thing is not to let the current situation shrink your imagination or damage your love for life.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;do-not-attach-too-much-meaning-to-work&#34;&gt;Do Not Attach Too Much Meaning to Work&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;When you remember that work is fundamentally an exchange of labor for money, many workplace dramas immediately become smaller.&lt;/li&gt;
+&lt;li&gt;When a manager tells you not to care too much about compensation, stay calm. Compensation is exactly one of the main things employees should care about.&lt;/li&gt;
+&lt;li&gt;The success or failure of a project is never fully under your control. Your job is to do your part well, finish the task, get paid, rest properly, and protect your own life outside work.&lt;/li&gt;
+&lt;li&gt;Do not let other people&amp;rsquo;s evaluation drag you into self-doubt or bitterness. Review the situation, identify what was truly your responsibility, improve where needed, and refuse blame that is not yours.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;stay-grounded-around-people&#34;&gt;Stay Grounded Around People&lt;/h3&gt;
+&lt;p&gt;At work, you will meet all kinds of people. Try to assume good faith first. Focus on the matter rather than attacking the person. Do your work, keep your judgment clear, and leave space between your identity and your job.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Notes from a Messy Day at Work</title>
+      <link>http://localhost:1313/en/blog/en/22-07-20/</link>
+      <pubDate>Wed, 20 Jul 2022 23:00:37 +0800</pubDate>
+      
+      <guid>http://localhost:1313/en/blog/en/22-07-20/</guid>
+      <description>&lt;p&gt;I missed my massage appointment because of meetings today. At one point I could clearly feel how the number of tasks, and the sheer messiness of them, compressed my sense of time. It had also been a while since I last handled a new requirement directly, so once I got back into it I noticed a lot of small details I had not considered carefully enough.&lt;/p&gt;
+&lt;p&gt;I still need to go deeper on solution design and workflow thinking. That means not only implementing our own side better, but also asking why a process is designed the way it is, how other teams&amp;rsquo; links in the chain work, and what tradeoffs they are making. I think this is the only way to improve system design ability in a durable way: understand the full path, find what is unreasonable, and then try to fix it. Complaining is easy. Taking initiative to face problems and solve them is what actually builds capability.&lt;/p&gt;
+&lt;p&gt;Today I fixed bugs raised by QA and continued decoupling the &amp;ldquo;create / cancel interception&amp;rdquo; flow. Looking back, I keep wondering whether this should be abstracted into interfaces or structs that separate creation, update, RPC calls, and logging. It may not be worth changing immediately, but it is at least worth evaluating. I also revisited whether RPC calls that are currently executed one by one in a loop should be moved to concurrent execution.&lt;/p&gt;
+&lt;p&gt;The export function is also only partially settled. The shipper side now exports correctly after fixing the field issue, but the merchant side still needs verification because the page claims export success while the query result does not show the record. That needs investigation. The grey release plan is another key item that still needs careful confirmation.&lt;/p&gt;
+&lt;p&gt;I had a forty-minute discussion today and felt how easily I can be affected by other people&amp;rsquo;s language when my thoughts are still messy. In that kind of situation, I should first make sure I understand the problem, then reason through it with explicit assumptions: what is feasible, what is not, and why. No solution is perfect. Sometimes the right answer is not even a technical one. If others can see an angle that I miss, then I need to ask what gap in my thinking caused that. That is where growth actually happens.&lt;/p&gt;
+&lt;p&gt;Current follow-up items:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Evaluate whether create/cancel logic should be abstracted further&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Verify the newly added online logic for &lt;code&gt;setExpress&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Prepare and execute one-time PPE data patching carefully&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Finish the release checklist for production&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Move the &lt;code&gt;lo&lt;/code&gt; calls to concurrent execution&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Finalize the grey release control logic&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Confirm export behavior across all three clients&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

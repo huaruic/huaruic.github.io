@@ -1,5 +1,6 @@
 ---
 title: sort algorithm
+date: 2023-10-15T18:18:48+08:00
 tags: ["algorithm"]
 ---
 

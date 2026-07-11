@@ -49,9 +49,21 @@ const prevPost = getPrevPost();
 
 const post = Astro.props;
 const { Content, headings } = await render(post);
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date.toISOString(),
+  inLanguage: "zh-CN",
+  author: { "@type": "Person", name: "Ernest Chen", url: "https://huaruic.com" },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+});
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
+  <script type="application/ld+json" set:html={jsonLd} />
   <Container>
     <div class="animate">
       <BackToPrevious href="/blog">返回博客</BackToPrevious>

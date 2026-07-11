@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://huaruic.com/sitemap-index.xml

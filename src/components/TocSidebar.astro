@@ -1,0 +1,25 @@
+---
+const { headings } = Astro.props;
+const minDepth = Math.min(...headings.map((h: { depth: number }) => h.depth));
+---
+
+<nav
+  class="fixed top-32 left-[calc(50vw-36rem)] hidden max-h-[calc(100vh-12rem)] w-56 overflow-y-auto text-sm xl:block"
+  aria-label="目录"
+  data-pagefind-ignore
+>
+  <ul class="space-y-2">
+    {
+      headings.map((heading: { depth: number; slug: string; text: string }) => (
+        <li style={`padding-left: ${(heading.depth - minDepth) * 0.75}rem`}>
+          <a
+            href={`#${heading.slug}`}
+            class="text-black/50 transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

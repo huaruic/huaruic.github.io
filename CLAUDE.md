@@ -4,39 +4,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Chinese personal blog ("Always Exploring") built on **AstroPaper** (Astro 5 + Tailwind 4). Deployed to GitHub Pages automatically on push to `master` (`.github/workflows/gp.yml` runs `pnpm astro build`). CI on PRs runs lint + format check + build (`.github/workflows/ci.yml`).
+Chinese personal blog ("Always Exploring") built on **Astro Micro** (Astro 5 + Tailwind 4, fork of Astro Nano). Deployed to GitHub Pages automatically on push to `master` (`.github/workflows/gp.yml` runs `pnpm build`). CI on PRs runs format check + build (`.github/workflows/ci.yml`).
 
 ## Commands
 
 Package manager is **pnpm** (v10, Node 20).
 
 ```bash
-pnpm dev            # local dev server
-pnpm build          # astro check + build + pagefind index (copied into public/)
+pnpm dev            # local dev server (port 4321)
+pnpm build          # astro check + astro build (pagefind index built by astro-pagefind integration)
 pnpm preview        # preview built site
-pnpm lint           # eslint
-pnpm format         # prettier --write (format:check to verify)
-pnpm sync           # regenerate astro content types
+pnpm format         # prettier --write (format:check to verify; CI enforces it)
 ```
 
-No tests. Verification = `pnpm build` passing (it includes type-checking via `astro check`).
+No tests. Verification = `pnpm build` passing (includes type-checking via `astro check`).
 
 ## Writing posts
 
-Posts live in `src/data/blog/*.md` (filenames starting with `_` are excluded). Frontmatter schema is defined in `src/content.config.ts`:
+Posts live in `src/content/blog/*.md` (URL: `/blog/<filename>/`). Frontmatter schema is in `src/content.config.ts`:
 
-- Required: `title`, `description`, `pubDatetime` (a date, e.g. `2026-07-11T12:00:00+08:00`)
-- Optional: `tags` (defaults to `["others"]`), `featured`, `draft`, `modDatetime`, `ogImage`, `author` (defaults to site author), `canonicalURL`, `timezone`
+- Required: `title`, `description`, `date` (e.g. `2026-07-12T12:00:00+08:00`)
+- Optional: `tags` (string array), `draft: true` (excluded from build)
 
 Publishing = commit the markdown and push to `master`; GitHub Actions builds and deploys.
 
 ## Architecture
 
-- `src/config.ts` — site-wide settings (SITE object: title, author, URL, lang `zh-CN`, timezone `Asia/Shanghai`, posts per page, feature toggles like `dynamicOgImage`)
-- `src/content.config.ts` — blog collection loader + zod frontmatter schema
-- `src/pages/` — routes (index, posts, tags, archives, search, rss, og image, robots)
-- `src/utils/` — post sorting/filtering/slugs, OG image generation (satori + resvg), shiki transformers
-- `astro.config.ts` — markdown pipeline (remark-toc, remark-collapse, shiki code themes/transformers), sitemap
-- Search is pagefind, indexed at build time
+- `src/consts.ts` — site title/description/email/socials, posts-per-homepage
+- `src/content.config.ts` — blog collection (glob loader) + zod schema
+- `src/pages/` — routes: index (bio + latest posts), blog, tags, rss, 404
+- `src/components/` — Head (SEO/OG), Header, search (Pagefind modal), TOC, post navigation
+- `src/styles/global.css` — Tailwind theme; CJK font stack and 1.9 line-height for Chinese prose
+- `astro.config.mjs` — site URL, sitemap/mdx/pagefind integrations, shiki css-variables theme
+- Search is Pagefind via the astro-pagefind integration (index generated during `astro build`)
 
-The site was migrated from Hugo (old post URLs were `/blog/zh/<slug>/`; current ones are `/posts/<slug>/`). All Hugo-era files have been removed.
+## Local customizations vs upstream Astro Micro
+
+Kept deliberately different from the upstream theme — do not "restore" these when pulling theme updates:
+
+- Projects collection/pages and Giscus comments removed entirely
+- `lang="zh-CN"` in Layout; UI strings translated to Chinese
+- `TableOfContents.astro` buildToc fixed to tolerate skipped heading levels (upstream crashes on h3-without-h2)
+- ESLint dropped; Prettier only (`.prettierrc.mjs`)
+
+History: the site ran Hugo, then AstroPaper (old post URLs `/posts/<slug>/`, Hugo-era `/blog/zh/<slug>/`); current URLs are `/blog/<slug>/`.

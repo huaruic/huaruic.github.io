@@ -46,5 +46,7 @@ Kept deliberately different from the upstream theme — do not "restore" these w
 - `lang="zh-CN"` in Layout; UI strings translated to Chinese
 - `TableOfContents.astro` buildToc fixed to tolerate skipped heading levels (upstream crashes on h3-without-h2)
 - ESLint dropped; Prettier only (`.prettierrc.mjs`)
+- Default OG/share image is `public/og.png`, referenced via the `image` prop default in `Head.astro`
+- `public/CNAME` (huaruic.com) is required for the GitHub Pages custom domain — never delete it
 
 History: the site ran Hugo, then AstroPaper (old post URLs `/posts/<slug>/`, Hugo-era `/blog/zh/<slug>/`); current URLs are `/blog/<slug>/`.

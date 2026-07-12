@@ -1,0 +1,60 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Link from "@components/Link.astro";
+import { SITE, SOCIALS } from "@consts";
+---
+
+<Layout
+  title="关于"
+  description="Ernest，后端工程师，主要写 Java 和 Go，在这里记录工作复盘、年终总结、阅读笔记与生活思考。"
+>
+  <Container>
+    <div class="space-y-16">
+      <section>
+        <h1 class="animate font-semibold text-black dark:text-white">关于</h1>
+        <article class="animate space-y-4 pt-4">
+          <p>我是 Ernest，一名后端工程师，主要写 Java 和 Go。</p>
+          <p>
+            这个博客从 2020
+            年写到现在，内容大多是工作中的复盘、每年一篇的年终总结、读过的书，以及旅行和日常生活里冒出来的想法。
+          </p>
+          <p>
+            写下来是为了在未来某个时刻回头看，知道自己曾经如何理解世界，又如何慢慢发生变化。
+          </p>
+        </article>
+      </section>
+
+      <section class="animate space-y-4">
+        <h2 class="font-semibold text-black dark:text-white">联系我</h2>
+        <article>
+          <p>想交流或者只是打个招呼，欢迎通过社交媒体或邮件找到我。</p>
+        </article>
+        <ul class="not-prose flex flex-wrap gap-2">
+          {
+            SOCIALS.map(SOCIAL => (
+              <li class="flex gap-x-2 text-nowrap">
+                <Link
+                  href={SOCIAL.HREF}
+                  external
+                  aria-label={`${SITE.TITLE} on ${SOCIAL.NAME}`}
+                >
+                  {SOCIAL.NAME}
+                </Link>
+                {"/"}
+              </li>
+            ))
+          }
+          <li class="line-clamp-1">
+            <Link
+              href={`mailto:${SITE.EMAIL}`}
+              aria-label={`Email ${SITE.TITLE}`}
+            >
+              {SITE.EMAIL}
+            </Link>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </Container>
+</Layout>

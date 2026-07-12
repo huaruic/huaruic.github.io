@@ -2,34 +2,33 @@
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
 
-import "@fontsource/geist-sans/100.css";
-import "@fontsource/geist-sans/200.css";
-import "@fontsource/geist-sans/300.css";
 import "@fontsource/geist-sans/400.css";
 import "@fontsource/geist-sans/500.css";
 import "@fontsource/geist-sans/600.css";
-import "@fontsource/geist-sans/700.css";
-import "@fontsource/geist-sans/800.css";
-import "@fontsource/geist-sans/900.css";
-import "@fontsource/geist-mono/100.css";
-import "@fontsource/geist-mono/200.css";
-import "@fontsource/geist-mono/300.css";
 import "@fontsource/geist-mono/400.css";
-import "@fontsource/geist-mono/500.css";
 import "@fontsource/geist-mono/600.css";
-import "@fontsource/geist-mono/700.css";
-import "@fontsource/geist-mono/800.css";
-import "@fontsource/geist-mono/900.css";
+
+import { SITE } from "@consts";
 
 interface Props {
   title: string;
   description: string;
   image?: string;
+  type?: "website" | "article";
+  publishedTime?: Date;
+  modifiedTime?: Date;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = "/astropaper-og.jpg" } = Astro.props;
+const {
+  title,
+  description,
+  image = "/og.png",
+  type = "website",
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -42,28 +41,53 @@ const { title, description, image = "/astropaper-og.jpg" } = Astro.props;
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
+<!-- RSS -->
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={SITE.TITLE}
+  href={new URL("rss.xml", Astro.site)}
+/>
+
 <!-- Primary Meta Tags -->
 <title>{title}</title>
-<meta name="title" content={title} />
 <meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
+<meta property="og:type" content={type} />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:site_name" content={SITE.TITLE} />
+{
+  type === "article" && publishedTime && (
+    <meta
+      property="article:published_time"
+      content={publishedTime.toISOString()}
+    />
+  )
+}
+{
+  type === "article" && modifiedTime && (
+    <meta
+      property="article:modified_time"
+      content={modifiedTime.toISOString()}
+    />
+  )
+}
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={Astro.url} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={new URL(image, Astro.url)} />
 
 <!-- PageFind -->
 <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
-<script is:inline src="/pagefind/pagefind-ui.js"></script>
+<script is:inline defer src="/pagefind/pagefind-ui.js"></script>
 
 <ClientRouter />
 
@@ -74,7 +98,6 @@ const { title, description, image = "/astropaper-og.jpg" } = Astro.props;
     animate();
     updateThemeButtons();
     addCopyCodeButtons();
-    setGiscusTheme();
 
     const backToTop = document.getElementById("back-to-top");
     backToTop?.addEventListener("click", event => scrollToTop(event));
@@ -195,8 +218,6 @@ const { title, description, image = "/astropaper-og.jpg" } = Astro.props;
 
     window.getComputedStyle(css).opacity;
     document.head.removeChild(css);
-
-    setGiscusTheme();
   }
 
   function preloadTheme() {
@@ -245,18 +266,6 @@ const { title, description, image = "/astropaper-og.jpg" } = Astro.props;
       });
     }
   }
-
-  const setGiscusTheme = () => {
-    const giscus = document.querySelector(".giscus-frame");
-
-    const isDark = document.documentElement.classList.contains("dark");
-
-    if (giscus) {
-      const url = new URL(giscus.src);
-      url.searchParams.set("theme", isDark ? "dark" : "light");
-      giscus.src = url.toString();
-    }
-  };
 
   document.addEventListener("DOMContentLoaded", () => init());
   document.addEventListener("astro:after-swap", () => init());

@@ -56,13 +56,24 @@ const jsonLd = JSON.stringify({
   headline: post.data.title,
   description: post.data.description,
   datePublished: post.data.date.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.date).toISOString(),
   inLanguage: "zh-CN",
-  author: { "@type": "Person", name: "Ernest Chen", url: "https://huaruic.com" },
+  author: {
+    "@type": "Person",
+    name: "Ernest",
+    url: "https://huaruic.com/about",
+  },
   mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
 });
 ---
 
-<Layout title={post.data.title} description={post.data.description}>
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+  publishedTime={post.data.date}
+  modifiedTime={post.data.updatedDate}
+>
   <script type="application/ld+json" set:html={jsonLd} />
   <Container>
     <div class="animate">

@@ -1,0 +1,21 @@
+# Always Exploring
+
+> Ernest 的中文个人博客，记录工作复盘、年终总结、阅读笔记、旅行与生活思考。
+
+## 主要页面
+
+- [首页](https://huaruic.com/): 站点简介与最新文章
+- [博客归档](https://huaruic.com/blog/): 全部文章列表
+- [关于](https://huaruic.com/about/): 作者介绍与联系方式
+- [RSS](https://huaruic.com/rss.xml): 订阅源
+
+## 精选文章
+
+- [2025年终总结](https://huaruic.com/blog/2025-year-end-summary/): 在清迈写下的年度复盘，回顾一年的状态与变化。
+- [2024年终总结](https://huaruic.com/blog/2024-year-end-summary/): 年末在海口写下的年度总结与思考。
+- [工作两年了](https://huaruic.com/blog/been-working-for-two-years/): 从 2020 年入行到 2022 年的职业阶段复盘与展望。
+- [为了什么而工作？](https://huaruic.com/blog/what-to-work-for/): 关于工作意义与个人选择的思考。
+- [「Software Engineering at Google」](https://huaruic.com/blog/software-engineering-at-google/): 谷歌软件工程一书的阅读笔记。
+- [Spring事务最佳实践【Java版】](https://huaruic.com/blog/spring-transactional/): 从一次事务失效问题出发梳理 Spring 声明式事务的正确用法。
+- [失落的卫星-深入中亚大陆的旅程](https://huaruic.com/blog/the-lost-moon/): 中亚旅行游记的阅读随笔。
+- [日本旅行感受](https://huaruic.com/blog/insights-from-japan/): 国庆日本之行的观察与感受。

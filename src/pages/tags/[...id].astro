@@ -29,12 +29,12 @@ const sortedPosts = posts.sort(
 );
 ---
 
-<Layout title={`Tag: ${id}`} description={`Posts with the tag: ${id}`}>
+<Layout title={`标签：${id}`} description={`标签「${id}」下的所有文章。`}>
   <Container>
     <div class="space-y-10" data-pagefind-ignore>
-      <BackToPrevious href="/tags"> All tags </BackToPrevious>
+      <BackToPrevious href="/tags"> 全部标签 </BackToPrevious>
       <h1 class="animate font-semibold text-black dark:text-white">
-        Posts tagged with "{id}"
+        标签「{id}」下的文章
       </h1>
       <ul class="animate flex flex-col gap-4">
         {sortedPosts.map(post => <ArrowCard entry={post} />)}

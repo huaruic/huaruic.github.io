@@ -43,5 +43,8 @@ jobs:
       - name: "📝 Checking code format"
         run: pnpm run format:check
 
+      - name: "🔍 Deterministic quality gates"
+        run: pnpm run verify
+
       - name: "🚀 Build the project"
         run: pnpm run build

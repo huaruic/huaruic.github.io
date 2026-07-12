@@ -1,0 +1,25 @@
+schema: spec-driven
+
+context: |
+  Project: huaruic.com, Ernest Chen 的中文个人站、博客与项目作品集
+  Stack: Astro 5、TypeScript、Astro Content Collections、Tailwind CSS 4、Pagefind、GitHub Pages
+  Rendering: 静态站点生成；生产规范域名为 https://huaruic.com；现有 URL 采用尾斜杠
+  Content: 中文为默认语言；内容源位于 src/content；项目与工作经历使用 Content Collections
+  Quality commands: pnpm run format:check；pnpm run build
+  Constraints: 不虚构作者身份、组织、评分、使用量或项目结果；Schema.org 数据必须有页面可见内容支撑
+  Change policy: OpenSpec 提案记录需求与任务，只有用户明确要求实施后才修改业务代码
+
+rules:
+  proposal:
+    - 使用中文编写，并明确 P0、P1、P2 优先级
+    - 必须包含 Non-goals，避免把可选 GEO 文件或机器人策略描述成排名保证
+  specs:
+    - 每条需求必须使用 MUST 或 SHALL，并至少包含一个 WHEN/THEN 场景
+    - 验收标准必须可自动测试或可通过明确的人工证据验证
+    - 不得在规范中记录真实凭据、令牌或其他秘密值
+  design:
+    - 必须保留审计问题编号、现状证据、最佳方案、依赖和风险
+    - 对身份、权属、DNS、机器人策略等未知事实保留为 Open Questions
+  tasks:
+    - 按依赖和优先级排序，每项使用可追踪复选框
+    - 每个任务必须说明完成证据或对应验证方式

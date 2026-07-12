@@ -5,12 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(date: Date) {
-  return Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
+// 标签 slug：ASCII 转小写去首尾空白，中文原样保留
+export function tagSlug(tag: string) {
+  return tag.trim().toLowerCase();
+}
+
+// 拼站点绝对 URL，统一尾斜杠
+export function toAbsoluteUrl(path: string) {
+  const normalized = path.endsWith("/") ? path : `${path}/`;
+  return new URL(normalized, "https://huaruic.com").href;
 }
 
 export function readingTime(html: string) {

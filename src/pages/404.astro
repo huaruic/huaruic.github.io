@@ -1,19 +1,23 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
-import BackToPrevious from "@components/BackToPrevious.astro";
-import { SITE } from "@consts";
+import Link from "@components/Link.astro";
 ---
 
-<Layout title="404" description={SITE.DESCRIPTION}>
+<Layout title="页面不存在" description="你访问的页面不存在或已被移动。" noindex>
   <Container>
-    <div class="mt-16 grid place-items-center gap-3">
-      <h4 class="animate text-2xl font-semibold text-black dark:text-white">
-        404：页面不存在
-      </h4>
-      <span class="animate">
-        <BackToPrevious href="/">返回首页</BackToPrevious>
-      </span>
+    <div class="mt-16 grid place-items-center gap-4 text-center">
+      <h1 class="text-2xl font-semibold text-black dark:text-white">
+        页面不存在
+      </h1>
+      <p class="max-w-[45ch] text-pretty">
+        你访问的页面可能已被移动或删除。可以从下面的入口继续，或使用页眉的搜索查找内容。
+      </p>
+      <nav aria-label="恢复入口" class="flex flex-wrap justify-center gap-4">
+        <Link href="/">返回首页</Link>
+        <Link href="/blog/">浏览博客</Link>
+        <Link href="/projects/">查看项目</Link>
+      </nav>
     </div>
   </Container>
 </Layout>

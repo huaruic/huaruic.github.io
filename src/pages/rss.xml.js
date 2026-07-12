@@ -13,6 +13,7 @@ export async function GET(context) {
     title: SITE.TITLE,
     description: SITE.DESCRIPTION,
     site: context.site,
+    customData: "<language>zh-CN</language>",
     items: items.map(item => ({
       title: item.data.title,
       description: item.data.description,

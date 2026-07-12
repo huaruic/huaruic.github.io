@@ -2,26 +2,36 @@
 import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
+import { tagSlug } from "@lib/utils";
 
 const posts = await getCollection("blog", ({ data }) => !data.draft);
-const tags = [...new Set(posts.flatMap(post => post.data.tags || []))].sort();
+
+// 按 slug 大小写无关归并，展示名取首次出现的原始写法
+const tagMap = new Map<string, { display: string; count: number }>();
+for (const post of posts) {
+  for (const tag of post.data.tags ?? []) {
+    const slug = tagSlug(tag);
+    const entry = tagMap.get(slug) ?? { display: tag.trim(), count: 0 };
+    entry.count += 1;
+    tagMap.set(slug, entry);
+  }
+}
+
+const tags = [...tagMap.entries()].sort((a, b) => b[1].count - a[1].count);
 ---
 
-<Layout title="标签" description="全部文章标签。">
+<Layout title="标签" description="按主题浏览全部文章标签。">
   <Container>
     <div class="space-y-10">
-      <h1 class="animate font-semibold">全部标签</h1>
-      <div class="animate flex flex-wrap gap-2">
+      <h1 class="font-semibold text-black dark:text-white">全部标签</h1>
+      <div class="flex flex-wrap gap-2">
         {
-          tags.map(tag => (
+          tags.map(([slug, { display, count }]) => (
             <a
-              href={`/tags/${tag}`}
+              href={`/tags/${slug}/`}
               class="rounded-sm border border-black/15 px-2 py-1 text-sm transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
             >
-              {tag}{" "}
-              <span class="text-sm text-gray-600">
-                ({posts.filter(post => post.data.tags?.includes(tag)).length})
-              </span>
+              {display} <span class="text-sm opacity-80">({count})</span>
             </a>
           ))
         }

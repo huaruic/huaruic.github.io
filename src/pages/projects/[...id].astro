@@ -31,17 +31,16 @@ const categoryLabels = {
 };
 
 const sameAs = [project.data.websiteURL, project.data.repoURL].filter(Boolean);
+const canonicalPath = Astro.url.pathname.endsWith("/")
+  ? Astro.url.pathname
+  : `${Astro.url.pathname}/`;
 const jsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "CreativeWork",
   name: project.data.title,
   description: project.data.description,
-  url: new URL(Astro.url.pathname, Astro.site).href,
-  creator: {
-    "@type": "Person",
-    name: "Ernest Chen",
-    url: "https://huaruic.com",
-  },
+  url: new URL(canonicalPath, Astro.site).href,
+  creator: { "@id": "https://huaruic.com/#person" },
   sameAs,
 });
 ---
@@ -49,25 +48,25 @@ const jsonLd = JSON.stringify({
 <Layout title={project.data.title} description={project.data.description}>
   <script is:inline type="application/ld+json" set:html={jsonLd} />
   <Container>
-    <div class="animate">
-      <BackToPrevious href="/projects">返回项目</BackToPrevious>
+    <div>
+      <BackToPrevious href="/projects/">返回项目</BackToPrevious>
     </div>
 
     <header class="my-10 space-y-3">
-      <div class="animate font-mono text-xs tracking-wide opacity-65">
+      <div class="font-mono text-xs tracking-wide opacity-80">
         {categoryLabels[project.data.category]}
       </div>
       <h1
-        class="animate text-3xl font-semibold tracking-tight text-black dark:text-white"
+        class="text-3xl font-semibold tracking-tight text-black dark:text-white"
       >
         {project.data.title}
       </h1>
-      <p class="animate max-w-[60ch] leading-7 text-pretty">
+      <p class="max-w-[60ch] leading-7 text-pretty">
         {project.data.description}
       </p>
       {
         (project.data.websiteURL || project.data.repoURL) && (
-          <nav class="animate flex flex-wrap items-center gap-2 pt-1">
+          <nav class="flex flex-wrap items-center gap-2 pt-1">
             {project.data.websiteURL && (
               <Link
                 href={project.data.websiteURL}
@@ -100,7 +99,7 @@ const jsonLd = JSON.stringify({
       )
     }
     {headings.length > 0 && <TocSidebar headings={headings} />}
-    <article class="animate">
+    <article class="entrance">
       <Content />
     </article>
   </Container>

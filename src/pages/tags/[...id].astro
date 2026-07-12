@@ -1,43 +1,61 @@
 ---
-import { getCollection } from "astro:content";
+import { type CollectionEntry, getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import ArrowCard from "@components/ArrowCard.astro";
 import BackToPrevious from "@components/BackToPrevious.astro";
+import { tagSlug } from "@lib/utils";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
 
-  // Get unique tags
-  const tags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+  // 按 slug 大小写无关归并（java/Java 合并），展示名取首次出现的原始写法
+  const bySlug = new Map<
+    string,
+    { display: string; posts: CollectionEntry<"blog">[] }
+  >();
+  for (const post of posts) {
+    for (const tag of post.data.tags ?? []) {
+      const slug = tagSlug(tag);
+      const entry = bySlug.get(slug) ?? { display: tag.trim(), posts: [] };
+      if (!entry.posts.includes(post)) {
+        entry.posts.push(post);
+      }
+      bySlug.set(slug, entry);
+    }
+  }
 
-  // Create paths for each tag
-  return tags.map(tag => ({
-    params: { id: tag },
-    props: {
-      posts: posts.filter(post => post.data.tags?.includes(tag)),
-    },
+  return [...bySlug.entries()].map(([slug, { display, posts }]) => ({
+    params: { id: slug },
+    props: { display, posts },
   }));
 }
 
-const { id } = Astro.params;
-const { posts } = Astro.props;
+const { display, posts } = Astro.props;
 
-// Sort posts by date, most recent first
 const sortedPosts = posts.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 ---
 
-<Layout title={`标签：${id}`} description={`标签「${id}」下的所有文章。`}>
+<Layout
+  title={`标签：${display}`}
+  description={`标签「${display}」下的 ${posts.length} 篇文章。`}
+>
   <Container>
     <div class="space-y-10" data-pagefind-ignore>
-      <BackToPrevious href="/tags"> 全部标签 </BackToPrevious>
-      <h1 class="animate font-semibold text-black dark:text-white">
-        标签「{id}」下的文章
+      <BackToPrevious href="/tags/">全部标签</BackToPrevious>
+      <h1 class="font-semibold text-black dark:text-white">
+        标签「{display}」下的文章
       </h1>
-      <ul class="animate flex flex-col gap-4">
-        {sortedPosts.map(post => <ArrowCard entry={post} />)}
+      <ul class="flex flex-col gap-4">
+        {
+          sortedPosts.map(post => (
+            <li>
+              <ArrowCard entry={post} />
+            </li>
+          ))
+        }
       </ul>
     </div>
   </Container>

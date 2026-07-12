@@ -2,15 +2,25 @@
 import Container from "@components/Container.astro";
 import Link from "@components/Link.astro";
 import { SITE } from "@consts";
+
+const path = Astro.url.pathname;
+
+const navItems = [
+  { href: "/blog/", label: "博客" },
+  { href: "/work/", label: "经历" },
+  { href: "/projects/", label: "项目" },
+];
+
+const isActive = (href: string) => path === href || path.startsWith(href);
 ---
 
 <header transition:persist>
   <Container>
     <div class="flex flex-wrap justify-between gap-y-2">
       <Link href="/" underline={false} aria-label={SITE.TITLE}>
-        <div class="flex items-center gap-2 font-semibold">
+        <div class="flex min-h-11 items-center gap-2 font-semibold">
           <img
-            src="/ernest-avatar.png"
+            src="/ernest-avatar-96.png"
             alt=""
             width="24"
             height="24"
@@ -22,38 +32,63 @@ import { SITE } from "@consts";
         </div>
       </Link>
       <nav class="flex items-center gap-1 text-sm">
-        <Link href="/blog">博客</Link>
-        <span>
-          {`/`}
-        </span>
-        <Link href="/work">经历</Link>
-        <span>
-          {`/`}
-        </span>
-        <Link href="/projects">项目</Link>
-        <span>
+        {
+          navItems.map((item, index) => (
+            <>
+              {index > 0 && <span aria-hidden="true">{`/`}</span>}
+              <Link
+                href={item.href}
+                class={
+                  isActive(item.href)
+                    ? "flex min-h-11 items-center px-1 font-medium text-black dark:text-white"
+                    : "flex min-h-11 items-center px-1"
+                }
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            </>
+          ))
+        }
+        <span aria-hidden="true">
           {`/`}
         </span>
         <button
           id="magnifying-glass"
-          aria-label="搜索"
-          class="flex items-center rounded-sm border border-black/15 bg-neutral-100 px-2 py-1 text-xs transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:bg-neutral-900 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+          aria-label="搜索（快捷键 Command K）"
+          class="group flex min-h-11 items-center gap-1.5 px-1 transition-colors duration-300 ease-in-out hover:text-black focus-visible:text-black dark:hover:text-white dark:focus-visible:text-white"
         >
-          <svg
-            height="16"
-            stroke-linejoin="round"
-            viewBox="0 0 16 16"
-            width="16"
-            style="color: currentcolor;"
-            ><path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M3.5 7C3.5 5.067 5.067 3.5 7 3.5C8.933 3.5 10.5 5.067 10.5 7C10.5 7.88461 10.1718 8.69256 9.63058 9.30876L9.30876 9.63058C8.69256 10.1718 7.88461 10.5 7 10.5C5.067 10.5 3.5 8.933 3.5 7ZM9.96544 11.0261C9.13578 11.6382 8.11014 12 7 12C4.23858 12 2 9.76142 2 7C2 4.23858 4.23858 2 7 2C9.76142 2 12 4.23858 12 7C12 8.11014 11.6382 9.13578 11.0261 9.96544L14.0303 12.9697L14.5607 13.5L13.5 14.5607L12.9697 14.0303L9.96544 11.0261Z"
-              fill="currentColor"></path></svg
+          <span
+            class="underline decoration-black/30 underline-offset-[3px] group-hover:decoration-black/50 dark:decoration-white/30 dark:group-hover:decoration-white/50"
           >
-          &nbsp;搜索
+            搜索
+          </span>
+          <kbd
+            aria-hidden="true"
+            class="hidden rounded-md border border-black/15 px-1.5 py-px font-sans text-[0.6875rem] text-black/45 sm:inline dark:border-white/20 dark:text-white/45"
+            >⌘K</kbd
+          >
         </button>
       </nav>
     </div>
   </Container>
 </header>
+
+<script is:inline>
+  // header 使用 transition:persist，客户端导航后由 SSR 输出的 aria-current 会过期，这里同步
+  document.addEventListener("astro:after-swap", () => {
+    document.querySelectorAll("header nav a[href]").forEach(a => {
+      const href = a.getAttribute("href");
+      if (!href || href === "/") return;
+      const active = location.pathname.startsWith(href.replace(/\/$/, ""));
+      a.classList.toggle("font-medium", active);
+      a.classList.toggle("text-black", active);
+      a.classList.toggle("dark:text-white", active);
+      if (active) {
+        a.setAttribute("aria-current", "page");
+      } else {
+        a.removeAttribute("aria-current");
+      }
+    });
+  });
+</script>

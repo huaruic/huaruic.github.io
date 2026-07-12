@@ -3,8 +3,8 @@ title: "从 Dialogue_System.py 看懂 LangGraph 与 Tool Calling"
 description: "从一段 LangGraph 搜索代码出发，拆解固定工作流、@tool、bind_tools、ToolNode、Pydantic、State 与 thread_id 的完整调用链。"
 date: 2026-07-12T15:10:51+07:00
 tags:
-  - "LangGraph"
-  - "Tool Calling"
+  - "langgraph"
+  - "tool calling"
 ---
 
 第一次看到 `@tool` 时，很容易产生一种错觉：给函数加上装饰器，模型就突然获得了调用 Python 的能力。继续往下看 LangGraph，问题反而更多了：Tavily 到底算不算 Tool？为什么要定义节点和边？模型调用明明是无状态的，`thread_id` 又保存了什么？工具参数如何从 JSON 变成真正的函数参数？

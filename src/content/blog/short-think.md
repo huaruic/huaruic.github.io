@@ -1,4 +1,5 @@
 ---
+draft: true
 title: "我的阅读写作工具"
 description: "介绍我的阅读和写作工具。"
 date: 2023-03-21T13:35:00.000Z
@@ -77,12 +78,12 @@ tags:
 
 ### 碎片信息收集
 
-对比图书这种规范的、有体系的收集方式，想要收集和利用好碎片信息并不是一件容易的事情，例如你看到一个有价值的博客、Twitter Thread，一篇好的帖子、想法或者优秀的APP，想要将它收集起来，以便后续利用起来，但你会发现它们格式并不相同，它们本身没有关联，难以统一格式归纳。二是如果不能抓取完整的网站内容，也无法进行保存和搜索利用。
+对比图书这种规范的、有体系的收集方式，想要收集和利用好碎片信息并不是一件容易的事情，例如你看到一个有价值的博客、Twitter Thread，一篇好的帖子、想法或者优秀的 APP，想要将它收集起来，以便后续利用起来，但你会发现它们格式并不相同，它们本身没有关联，难以统一格式归纳。二是如果不能抓取完整的网站内容，也无法进行保存和搜索利用。
 
 遗憾的是，关于这些缺陷目前并没有很好的解决办法，无论你是使用收藏网页，还是手动记录到备忘录中，都无法支持第二点。即使是使用像 [Readwise Reader](https://read.readwise.io/) 这类专业的一站式信息收集处理系统，都无法完全的解决第二点，依旧有大量网站内容无法完美抓取。目前我个人会使用不同的工具来缓解这一问题。
 
-- 博客类的网站往往会有 RSS 源或者 newsletter 订阅，newsletter只需要用邮箱订阅即可，RSS 源我使用的是Chrome 插件 [RSSHub Reader](https://chrome.google.com/webstore/detail/rsshub-radar/kefjpfngnndepjbopdmoebkipbgkggaa) 来寻找，配合 [Netnewswire](https://netnewswire.com/) 来进行订阅和阅读。感兴趣试试下载插件后在本站能否复制 RSS 链接订阅。
-- 使用 [cubox](https://cubox.pro/) 来进行一站式信息收集处理系统，负责收集不同类型的网站和资源。(2023--4-17更新，使用 [omivore](https://github.com/omnivore-app/omnivore) 替代)
+- 博客类的网站往往会有 RSS 源或者 newsletter 订阅，newsletter 只需要用邮箱订阅即可，RSS 源我使用的是 Chrome 插件 [RSSHub Reader](https://chrome.google.com/webstore/detail/rsshub-radar/kefjpfngnndepjbopdmoebkipbgkggaa) 来寻找，配合 [Netnewswire](https://netnewswire.com/) 来进行订阅和阅读。感兴趣试试下载插件后在本站能否复制 RSS 链接订阅。
+- 使用 [cubox](https://cubox.pro/) 来进行一站式信息收集处理系统，负责收集不同类型的网站和资源。(2023--4-17 更新，使用 [omivore](https://github.com/omnivore-app/omnivore) 替代)
 
 笔者认为对于收集碎片信息这一流程，使用什么工具并不重要，无论是使用移动设备上的备忘录顺手记录，还是专业的工具收集，即然都无法做到完美，那么不如将重心放到定期回顾碎片信息和整理上。无论是将它们和后续的输出计划整理到一起，或者是阅读后填充到笔记中，完善整个知识体系才是最终目标。
 

@@ -6,11 +6,11 @@
 
 @theme {
   --font-sans:
-    Geist Sans, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-    "Noto Sans SC", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    -apple-system, "SF Pro Text", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono:
-    Geist Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
 }
 
@@ -21,7 +21,12 @@
     line-height: 1.9;
   }
   article {
-    text-align: justify;
+    text-align: start;
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
   }
 }
 
@@ -97,15 +102,85 @@
     @apply text-black dark:text-white;
     @apply decoration-black/50 dark:decoration-white/50;
   }
+  article a:visited {
+    @apply decoration-black/20 dark:decoration-white/20;
+  }
 }
 
-.animate {
-  @apply -translate-y-3 opacity-0;
-  @apply transition-all duration-300 ease-out;
+/* 入场动画：仅文章页正文（article.entrance），H1/日期/标签在 article 之外，天然不参与。
+   使用 backwards 填充：无 JS、爬虫与阅读模式下内容静态可见，不影响 LCP 候选。 */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.animate.show {
-  @apply translate-y-0 opacity-100;
+article.entrance > * {
+  animation: fade-in-up 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) backwards;
+}
+
+article.entrance > :nth-child(1) {
+  animation-delay: 0.05s;
+}
+article.entrance > :nth-child(2) {
+  animation-delay: 0.1s;
+}
+article.entrance > :nth-child(3) {
+  animation-delay: 0.15s;
+}
+article.entrance > :nth-child(4) {
+  animation-delay: 0.2s;
+}
+article.entrance > :nth-child(5) {
+  animation-delay: 0.25s;
+}
+article.entrance > :nth-child(6) {
+  animation-delay: 0.3s;
+}
+article.entrance > :nth-child(n + 7) {
+  animation-delay: 0.35s;
+}
+
+@media (max-width: 767px) {
+  article.entrance > :nth-child(n + 5) {
+    animation-delay: 0s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article.entrance > * {
+    animation: none;
+  }
+}
+
+/* 主题切换：View Transitions clip-path 擦除（由 Head.astro 的 toggleThemeAnimated 触发） */
+@keyframes theme-reveal {
+  from {
+    clip-path: inset(var(--theme-reveal-from));
+  }
+}
+
+html[data-theme-transition]::view-transition-new(root) {
+  animation: theme-reveal 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  clip-path: inset(0);
+  z-index: 1;
+}
+
+html[data-theme-transition]::view-transition-old(root) {
+  animation: none;
+}
+
+html.dark {
+  --theme-reveal-from: 0 0 100% 0;
+}
+
+html:not(.dark) {
+  --theme-reveal-from: 100% 0 0 0;
 }
 
 html #back-to-top {

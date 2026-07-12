@@ -16,3 +16,13 @@ export type Socials = {
   NAME: string;
   HREF: string;
 }[];
+
+export type Author = {
+  NAME: string;
+  ALIAS: string;
+  URL: string;
+  EMAIL: string;
+  AVATAR: string;
+  X: string;
+  GITHUB: string;
+};

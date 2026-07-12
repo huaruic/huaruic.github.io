@@ -1,146 +1,366 @@
 ---
-import Search from "astro-pagefind/components/Search";
+
 ---
 
 <aside data-pagefind-ignore>
   <div
     transition:persist
     id="backdrop"
-    class="bg-[rgba(0, 0, 0, 0.5] invisible fixed top-0 left-0 z-50 flex h-screen w-full justify-center p-6 backdrop-blur-xs"
+    class="invisible fixed top-0 left-0 z-50 flex h-screen w-full items-start justify-center bg-black/50 p-4 pt-[12vh] backdrop-blur-xs sm:p-6 sm:pt-[14vh]"
   >
     <div
       id="pagefind-container"
-      class="m-0 flex h-fit max-h-[80%] w-full max-w-(--breakpoint-sm) flex-col overflow-auto rounded-sm border border-black/15 bg-neutral-100 p-2 px-4 py-3 shadow-lg dark:border-white/20 dark:bg-neutral-900"
+      role="dialog"
+      aria-modal="true"
+      aria-label="站内搜索"
+      class="m-0 flex max-h-[65vh] w-full max-w-xl flex-col overflow-hidden rounded-xl border border-black/10 bg-neutral-100 shadow-2xl dark:border-white/10 dark:bg-neutral-900"
     >
-      <Search
-        id="search"
-        className="pagefind-ui"
-        uiOptions={{
-          showImages: false,
-          excerptLength: 15,
-          resetStyles: false,
-          translations: {
-            placeholder: "搜索文章",
-            clear_search: "清空",
-            load_more: "加载更多结果",
-            search_label: "站内搜索",
-            zero_results: "未找到与「[SEARCH_TERM]」相关的结果",
-            many_results: "找到 [COUNT] 条与「[SEARCH_TERM]」相关的结果",
-            one_result: "找到 [COUNT] 条与「[SEARCH_TERM]」相关的结果",
-            alt_search:
-              "未找到与「[SEARCH_TERM]」相关的结果，已改为搜索「[DIFFERENT_TERM]」",
-            search_suggestion:
-              "未找到与「[SEARCH_TERM]」相关的结果，试试以下搜索：",
-            searching: "正在搜索「[SEARCH_TERM]」…",
-          },
-        }}
-      />
-      <div class="mr-2 pt-4 pb-1 text-right text-xs dark:prose-invert">
-        按 <span class="prose text-xs dark:prose-invert"
-          ><kbd class="">Esc</kbd></span
-        > 或点击空白处关闭
+      <div
+        class="flex items-center gap-3 border-b border-black/10 px-4 dark:border-white/10"
+      >
+        <svg
+          viewBox="0 0 16 16"
+          width="16"
+          height="16"
+          class="shrink-0 opacity-50"
+          aria-hidden="true"
+          ><path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M3.5 7C3.5 5.067 5.067 3.5 7 3.5C8.933 3.5 10.5 5.067 10.5 7C10.5 7.88461 10.1718 8.69256 9.63058 9.30876L9.30876 9.63058C8.69256 10.1718 7.88461 10.5 7 10.5C5.067 10.5 3.5 8.933 3.5 7ZM9.96544 11.0261C9.13578 11.6382 8.11014 12 7 12C4.23858 12 2 9.76142 2 7C2 4.23858 4.23858 2 7 2C9.76142 2 12 4.23858 12 7C12 8.11014 11.6382 9.13578 11.0261 9.96544L14.0303 12.9697L14.5607 13.5L13.5 14.5607L12.9697 14.0303L9.96544 11.0261Z"
+            fill="currentColor"></path></svg
+        >
+        <input
+          id="palette-input"
+          type="text"
+          name="palette-search"
+          placeholder="搜索文章、项目…"
+          autocomplete="off"
+          spellcheck="false"
+          role="combobox"
+          aria-expanded="false"
+          aria-controls="palette-results"
+          aria-label="搜索关键词"
+          class="h-12 min-w-0 flex-1 bg-transparent text-[0.9375rem] text-black outline-none placeholder:text-black/40 dark:text-white dark:placeholder:text-white/40"
+        />
+        <button
+          id="search-close"
+          aria-label="关闭搜索"
+          class="flex h-11 shrink-0 items-center justify-center"
+        >
+          <kbd
+            class="rounded-md border border-black/15 px-2 py-0.5 font-sans text-xs text-black/50 dark:border-white/20 dark:text-white/50"
+            >Esc</kbd
+          >
+        </button>
+      </div>
+
+      <div id="palette-body" class="overflow-y-auto overscroll-contain p-2">
+        <p
+          id="palette-hint"
+          class="px-3 py-6 text-center text-sm text-black/40 dark:text-white/40"
+        >
+          输入关键词，搜索文章与项目
+        </p>
+        <p id="search-error" hidden class="px-3 py-6 text-center text-sm">
+          搜索组件加载失败，请刷新页面后重试。
+        </p>
+        <div id="palette-section" hidden>
+          <div
+            class="px-3 pt-1 pb-2 text-xs font-medium tracking-wide text-black/40 dark:text-white/40"
+          >
+            结果
+          </div>
+          <ul id="palette-results" role="listbox" aria-label="搜索结果"></ul>
+        </div>
       </div>
     </div>
   </div>
 </aside>
 
 <script is:inline>
-  const magnifyingGlass = document.getElementById("magnifying-glass");
-  const backdrop = document.getElementById("backdrop");
+  (() => {
+    if (window.__pagefindSearchInit) return;
+    window.__pagefindSearchInit = true;
 
-  function openPagefind() {
-    const searchDiv = document.getElementById("search");
-    const search = searchDiv.querySelector("input");
-    setTimeout(() => {
-      search.focus();
-    }, 0);
-    backdrop?.classList.remove("invisible");
-    backdrop?.classList.add("visible");
-  }
+    let pagefind = null;
+    let loading = false;
+    let lastTrigger = null;
+    let selectedIndex = -1;
+    let currentResults = [];
 
-  function closePagefind() {
-    const search = document.getElementById("search");
-    search.value = "";
-    backdrop?.classList.remove("visible");
-    backdrop?.classList.add("invisible");
-  }
+    const $ = id => document.getElementById(id);
+    const backdrop = () => $("backdrop");
+    const isOpen = () => {
+      const bd = backdrop();
+      return !!bd && !bd.classList.contains("invisible");
+    };
 
-  // open pagefind
-  magnifyingGlass?.addEventListener("click", () => {
-    openPagefind();
-  });
+    const ICONS = {
+      // 文章：方框内铅笔
+      post: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+      // 页面：文档
+      page: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>',
+      // 项目：立方体
+      project:
+        '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 16-9 5-9-5V8l9-5 9 5Z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/></svg>',
+    };
 
-  document.addEventListener("keydown", e => {
-    if (e.key === "/") {
-      e.preventDefault();
-      openPagefind();
-    } else if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-      e.preventDefault();
-      openPagefind();
+    const iconFor = url =>
+      url.includes("/blog/")
+        ? ICONS.post
+        : url.includes("/projects/")
+          ? ICONS.project
+          : ICONS.page;
+
+    const escapeHtml = s =>
+      s.replace(
+        /[&<>"']/g,
+        c =>
+          ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+          })[c]
+      );
+
+    async function ensurePagefind() {
+      if (pagefind) return true;
+      if (loading) return false;
+      loading = true;
+      try {
+        pagefind = await import(/* @vite-ignore */ "/pagefind/pagefind.js");
+        await pagefind.init();
+        return true;
+      } catch {
+        pagefind = null;
+        $("search-error")?.removeAttribute("hidden");
+        $("palette-hint")?.setAttribute("hidden", "");
+        return false;
+      } finally {
+        loading = false;
+      }
     }
-  });
 
-  // close pagefind
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") {
-      closePagefind();
+    function setSelected(index) {
+      const items = $("palette-results")?.children || [];
+      if (items.length === 0) return;
+      selectedIndex = Math.max(0, Math.min(index, items.length - 1));
+      for (let i = 0; i < items.length; i++) {
+        const link = items[i].firstElementChild;
+        items[i].setAttribute("aria-selected", i === selectedIndex);
+        link.classList.toggle("bg-black/[.06]", i === selectedIndex);
+        link.classList.toggle("dark:bg-white/[.08]", i === selectedIndex);
+      }
+      items[selectedIndex]?.scrollIntoView({ block: "nearest" });
+      $("palette-input")?.setAttribute(
+        "aria-activedescendant",
+        `palette-option-${selectedIndex}`
+      );
     }
-  });
 
-  // close pagefind when searched result(link) clicked
-  document.addEventListener("click", event => {
-    if (event.target.classList.contains("pagefind-ui__result-link")) {
-      closePagefind();
+    function renderResults(results, query) {
+      const section = $("palette-section");
+      const list = $("palette-results");
+      const hint = $("palette-hint");
+      if (!section || !list || !hint) return;
+
+      if (query.trim() === "") {
+        section.setAttribute("hidden", "");
+        hint.removeAttribute("hidden");
+        hint.textContent = "输入关键词，搜索文章与项目";
+        $("palette-input")?.setAttribute("aria-expanded", "false");
+        return;
+      }
+      if (results.length === 0) {
+        section.setAttribute("hidden", "");
+        hint.removeAttribute("hidden");
+        hint.textContent = `未找到与「${query}」相关的结果`;
+        $("palette-input")?.setAttribute("aria-expanded", "false");
+        return;
+      }
+
+      hint.setAttribute("hidden", "");
+      section.removeAttribute("hidden");
+      $("palette-input")?.setAttribute("aria-expanded", "true");
+      list.innerHTML = results
+        .map(
+          (r, i) => `
+        <li id="palette-option-${i}" role="option" aria-selected="false">
+          <a href="${r.url}" class="palette-result flex gap-3 rounded-lg px-3 py-2.5 transition-colors duration-150">
+            <span class="mt-0.5 shrink-0 opacity-50">${iconFor(r.url)}</span>
+            <span class="min-w-0">
+              <span class="block truncate text-sm font-medium text-black dark:text-white">${escapeHtml(r.title)}</span>
+              <span class="palette-excerpt mt-0.5 line-clamp-2 block text-sm leading-snug text-black/55 dark:text-white/55">${r.excerpt}</span>
+            </span>
+          </a>
+        </li>`
+        )
+        .join("");
+
+      for (const li of list.children) {
+        li.addEventListener("mousemove", () =>
+          setSelected([...list.children].indexOf(li))
+        );
+      }
+      setSelected(0);
     }
-  });
 
-  backdrop?.addEventListener("click", event => {
-    if (!event.target.closest("#pagefind-container")) {
-      closePagefind();
+    let searchToken = 0;
+    async function runSearch(query) {
+      if (!(await ensurePagefind())) return;
+      const token = ++searchToken;
+      if (query.trim() === "") {
+        currentResults = [];
+        renderResults([], query);
+        return;
+      }
+      const search = await pagefind.debouncedSearch(query, {}, 150);
+      if (search === null || token !== searchToken) return; // 已被更新的输入取代
+      const top = await Promise.all(
+        search.results.slice(0, 8).map(r => r.data())
+      );
+      if (token !== searchToken) return;
+      currentResults = top.map(d => ({
+        url: d.url,
+        title: d.meta?.title || d.url,
+        excerpt: d.excerpt || "",
+      }));
+      renderResults(currentResults, query);
     }
-  });
 
-  // prevent form submission
-  const form = document.getElementById("form");
-  form?.addEventListener("submit", event => {
-    event.preventDefault();
-  });
+    async function openPagefind(trigger) {
+      lastTrigger =
+        trigger instanceof HTMLElement ? trigger : document.activeElement;
+      backdrop()?.classList.remove("invisible");
+      const input = $("palette-input");
+      setTimeout(() => input?.focus(), 0);
+      ensurePagefind();
+    }
+
+    function closePagefind() {
+      if (!isOpen()) return;
+      const input = $("palette-input");
+      if (input) input.value = "";
+      currentResults = [];
+      selectedIndex = -1;
+      renderResults([], "");
+      backdrop()?.classList.add("invisible");
+      if (lastTrigger && document.contains(lastTrigger)) {
+        lastTrigger.focus();
+      }
+      lastTrigger = null;
+    }
+
+    const inEditable = el =>
+      !!el &&
+      (el.tagName === "INPUT" ||
+        el.tagName === "TEXTAREA" ||
+        el.isContentEditable);
+
+    document.addEventListener("input", event => {
+      if (event.target?.id === "palette-input") {
+        runSearch(event.target.value);
+      }
+    });
+
+    document.addEventListener("click", event => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const openButton = target.closest("#magnifying-glass");
+      if (openButton) {
+        openPagefind(openButton);
+        return;
+      }
+      if (target.closest("#search-close")) {
+        closePagefind();
+        return;
+      }
+      if (target.closest(".palette-result")) {
+        closePagefind();
+        return;
+      }
+      if (
+        isOpen() &&
+        target.closest("#backdrop") &&
+        !target.closest("#pagefind-container")
+      ) {
+        closePagefind();
+      }
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closePagefind();
+        return;
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        openPagefind();
+        return;
+      }
+      if (event.key === "/" && !inEditable(event.target) && !isOpen()) {
+        event.preventDefault();
+        openPagefind();
+        return;
+      }
+      if (!isOpen()) return;
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setSelected(selectedIndex + 1);
+        return;
+      }
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setSelected(selectedIndex - 1);
+        return;
+      }
+      if (
+        event.key === "Enter" &&
+        document.activeElement?.id === "palette-input"
+      ) {
+        const selected = currentResults[selectedIndex];
+        if (selected) {
+          closePagefind();
+          window.location.href = selected.url;
+        }
+        return;
+      }
+      if (event.key === "Tab") {
+        const container = $("pagefind-container");
+        if (!container) return;
+        const focusables = container.querySelectorAll(
+          "a[href], button:not([disabled]), input, [tabindex]:not([tabindex='-1'])"
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        } else if (!container.contains(document.activeElement)) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  })();
 </script>
 
 <style is:global>
-  :root {
-    --pagefind-ui-scale: 0.75;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 3px;
-    --pagefind-ui-font: "Geist", sans-serif;
-    --pagefind-ui-primary: #3d3d3d;
-    --pagefind-ui-text: #3d3d3d;
-    --pagefind-ui-background: #ffffff;
-    --pagefind-ui-border: #d0d0d0;
-    --pagefind-ui-tag: #f5f5f5;
+  /* 搜索命中词：品牌橙 */
+  .palette-excerpt mark {
+    background: transparent;
+    color: #e8752f;
+    font-weight: 500;
   }
-
-  .dark {
-    --pagefind-ui-primary: #d4d4d4;
-    --pagefind-ui-text: #d4d4d4;
-    --pagefind-ui-background: #171717;
-    --pagefind-ui-border: #404040;
-  }
-
-  #search input {
-    font-weight: normal;
-  }
-
-  #search p {
-    font-weight: normal;
-  }
-
-  #search .pagefind-ui__result-title {
-    font-weight: 600;
-  }
-
-  #search .pagefind-ui__message {
-    padding: 0;
-    padding-bottom: 0.75rem;
+  .dark .palette-excerpt mark {
+    color: #f0904d;
   }
 </style>

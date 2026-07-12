@@ -35,9 +35,9 @@ const groups = [
 
 <Layout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>
   <Container>
-    <aside data-pagefind-ignore>
+    <div data-pagefind-ignore>
       <div class="space-y-12">
-        <header class="animate space-y-3">
+        <header class="space-y-3">
           <h1
             class="text-xl font-semibold tracking-tight text-black dark:text-white"
           >
@@ -58,7 +58,7 @@ const groups = [
               if (entries.length === 0) return null;
 
               return (
-                <section class="animate space-y-5">
+                <section class="space-y-5">
                   <div>
                     <h2 class="font-semibold text-black dark:text-white">
                       {group.title}
@@ -78,6 +78,6 @@ const groups = [
           }
         </div>
       </div>
-    </aside>
+    </div>
   </Container>
 </Layout>

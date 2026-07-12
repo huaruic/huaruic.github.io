@@ -4,22 +4,26 @@ const minDepth = Math.min(...headings.map((h: { depth: number }) => h.depth));
 ---
 
 <nav
+  id="toc-sidebar"
   class="fixed top-32 left-4 z-30 hidden max-h-[calc(100vh-12rem)] w-40 overflow-y-auto text-xs lg:block xl:left-[calc(50vw-36rem)] xl:w-56 xl:text-sm"
   aria-label="目录"
   data-pagefind-ignore
 >
   <div
-    class="mb-3 font-mono text-[0.6875rem] tracking-[0.16em] text-black/40 dark:text-white/40"
+    class="mb-3 font-mono text-[0.6875rem] tracking-[0.16em] text-black/60 dark:text-white/60"
   >
     目录
   </div>
-  <ul class="space-y-2">
+  <ul class="space-y-2 border-l border-black/10 dark:border-white/10">
     {
       headings.map((heading: { depth: number; slug: string; text: string }) => (
-        <li style={`padding-left: ${(heading.depth - minDepth) * 0.75}rem`}>
+        <li
+          class="-ml-px border-l-2 border-transparent"
+          style={`padding-left: ${(heading.depth - minDepth) * 0.75 + 0.75}rem`}
+        >
           <a
             href={`#${heading.slug}`}
-            class="text-black/50 transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
+            class="text-black/60 transition-colors hover:text-black focus-visible:text-black dark:text-white/60 dark:hover:text-white dark:focus-visible:text-white"
           >
             {heading.text}
           </a>
@@ -28,3 +32,63 @@ const minDepth = Math.min(...headings.map((h: { depth: number }) => h.depth));
     }
   </ul>
 </nav>
+
+<style>
+  a.toc-active {
+    color: black;
+  }
+  :global(html.dark) a.toc-active {
+    color: white;
+  }
+  li:has(> a.toc-active) {
+    border-color: rgb(0 0 0 / 0.6);
+  }
+  :global(html.dark) li:has(> a.toc-active) {
+    border-color: rgb(255 255 255 / 0.7);
+  }
+</style>
+
+<script>
+  let tocObserver: IntersectionObserver | null = null;
+
+  function initTocSpy() {
+    tocObserver?.disconnect();
+    tocObserver = null;
+
+    const nav = document.getElementById("toc-sidebar");
+    if (!nav) return;
+
+    const links = new Map<string, HTMLAnchorElement>();
+    nav.querySelectorAll<HTMLAnchorElement>("a[href^='#']").forEach(a => {
+      links.set(decodeURIComponent(a.hash.slice(1)), a);
+    });
+    if (links.size === 0) return;
+
+    const headings = [...links.keys()]
+      .map(id => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    let activeId: string | null = null;
+    const setActive = (id: string | null) => {
+      if (id === activeId) return;
+      activeId = id;
+      links.forEach((link, key) =>
+        link.classList.toggle("toc-active", key === id)
+      );
+    };
+
+    tocObserver = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: "-96px 0px -66% 0px", threshold: 0 }
+    );
+    headings.forEach(heading => tocObserver!.observe(heading));
+  }
+
+  document.addEventListener("astro:page-load", initTocSpy);
+</script>

@@ -8,12 +8,22 @@ import { SITE } from "@consts";
 type Props = {
   title: string;
   description: string;
+  image?: string;
   type?: "website" | "article";
   publishedTime?: Date;
   modifiedTime?: Date;
+  noindex?: boolean;
 };
 
-const { title, description, type, publishedTime, modifiedTime } = Astro.props;
+const {
+  title,
+  description,
+  image,
+  type,
+  publishedTime,
+  modifiedTime,
+  noindex,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -22,22 +32,22 @@ const { title, description, type, publishedTime, modifiedTime } = Astro.props;
     <Head
       title={`${title} | ${SITE.TITLE}`}
       description={description}
+      image={image}
       type={type}
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
+      noindex={noindex}
     />
   </head>
   <body>
-    <noscript>
-      <style>
-        .animate {
-          opacity: 1;
-          translate: var(--tw-translate-x) calc(var(--spacing) * 0);
-        }
-      </style>
-    </noscript>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:rounded-sm focus:border focus:border-black/15 focus:bg-neutral-100 focus:px-3 focus:py-2 dark:focus:border-white/20 dark:focus:bg-neutral-900"
+    >
+      跳到主内容
+    </a>
     <Header />
-    <main>
+    <main id="main">
       <slot />
     </main>
     <Footer />

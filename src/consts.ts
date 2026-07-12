@@ -1,4 +1,14 @@
-import type { Metadata, Site, Socials } from "@types";
+import type { Author, Metadata, Site, Socials } from "@types";
+
+export const AUTHOR: Author = {
+  NAME: "Ernest Chen",
+  ALIAS: "Ernest",
+  URL: "https://huaruic.com",
+  EMAIL: "ernestchen247@gmail.com",
+  AVATAR: "/ernest-avatar.png",
+  X: "https://x.com/0xErnest247",
+  GITHUB: "https://github.com/huaruic",
+};
 
 export const SITE: Site = {
   TITLE: "Always Exploring",
@@ -18,7 +28,8 @@ export const HOME: Metadata = {
 
 export const BLOG: Metadata = {
   TITLE: "博客",
-  DESCRIPTION: "所有文章的归档。",
+  DESCRIPTION:
+    "Ernest 的全部文章：AI Agent 工程实践、工作复盘，以及阅读、旅行与生活记录。",
 };
 
 export const WORK: Metadata = {

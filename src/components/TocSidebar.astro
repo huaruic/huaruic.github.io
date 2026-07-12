@@ -4,10 +4,15 @@ const minDepth = Math.min(...headings.map((h: { depth: number }) => h.depth));
 ---
 
 <nav
-  class="fixed top-32 left-[calc(50vw-36rem)] hidden max-h-[calc(100vh-12rem)] w-56 overflow-y-auto text-sm xl:block"
+  class="fixed top-32 left-4 z-30 hidden max-h-[calc(100vh-12rem)] w-40 overflow-y-auto text-xs lg:block xl:left-[calc(50vw-36rem)] xl:w-56 xl:text-sm"
   aria-label="目录"
   data-pagefind-ignore
 >
+  <div
+    class="mb-3 font-mono text-[0.6875rem] tracking-[0.16em] text-black/40 dark:text-white/40"
+  >
+    目录
+  </div>
   <ul class="space-y-2">
     {
       headings.map((heading: { depth: number; slug: string; text: string }) => (

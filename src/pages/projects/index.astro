@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import ArrowCard from "@components/ArrowCard.astro";
+import { PROJECTS } from "@consts";
+
+const projects = (await getCollection("projects"))
+  .filter(project => !project.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const groups = [
+  {
+    key: "ai",
+    title: "AI",
+    description: "本地优先，隐私优先",
+  },
+  {
+    key: "onchain",
+    title: "Onchain",
+    description: "保持机密，也保持可验证",
+  },
+  {
+    key: "community",
+    title: "Community",
+    description: "让 Builder 在真实协作中相遇",
+  },
+  {
+    key: "side",
+    title: "Side",
+    description: "从生活和兴趣出发的小实验",
+  },
+] as const;
+---
+
+<Layout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>
+  <Container>
+    <aside data-pagefind-ignore>
+      <div class="space-y-12">
+        <header class="animate space-y-3">
+          <h1
+            class="text-xl font-semibold tracking-tight text-black dark:text-white"
+          >
+            项目
+          </h1>
+          <p class="max-w-[60ch] leading-7 text-pretty">
+            从本地 AI Agent 到机密链上应用，这些是我正在构建、维护或参与的项目。
+          </p>
+        </header>
+
+        <div class="space-y-12">
+          {
+            groups.map(group => {
+              const entries = projects.filter(
+                project => project.data.category === group.key
+              );
+
+              if (entries.length === 0) return null;
+
+              return (
+                <section class="animate space-y-5">
+                  <div>
+                    <h2 class="font-semibold text-black dark:text-white">
+                      {group.title}
+                    </h2>
+                    <p class="text-sm opacity-70">{group.description}</p>
+                  </div>
+                  <ul class="not-prose flex flex-col gap-4">
+                    {entries.map(project => (
+                      <li>
+                        <ArrowCard entry={project} />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            })
+          }
+        </div>
+      </div>
+    </aside>
+  </Container>
+</Layout>

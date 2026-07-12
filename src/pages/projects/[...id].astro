@@ -1,0 +1,107 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import BackToPrevious from "@components/BackToPrevious.astro";
+import Link from "@components/Link.astro";
+import TableOfContents from "@components/TableOfContents.astro";
+import TocSidebar from "@components/TocSidebar.astro";
+
+export async function getStaticPaths() {
+  const projects = (await getCollection("projects"))
+    .filter(project => !project.data.draft)
+    .sort((a, b) => a.data.order - b.data.order);
+
+  return projects.map(project => ({
+    params: { id: project.id },
+    props: project,
+  }));
+}
+
+type Props = CollectionEntry<"projects">;
+
+const project = Astro.props;
+const { Content, headings } = await render(project);
+
+const categoryLabels = {
+  ai: "AI",
+  onchain: "Onchain",
+  community: "Community",
+  side: "Side project",
+};
+
+const sameAs = [project.data.websiteURL, project.data.repoURL].filter(Boolean);
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: project.data.title,
+  description: project.data.description,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  creator: {
+    "@type": "Person",
+    name: "Ernest Chen",
+    url: "https://huaruic.com",
+  },
+  sameAs,
+});
+---
+
+<Layout title={project.data.title} description={project.data.description}>
+  <script is:inline type="application/ld+json" set:html={jsonLd} />
+  <Container>
+    <div class="animate">
+      <BackToPrevious href="/projects">返回项目</BackToPrevious>
+    </div>
+
+    <header class="my-10 space-y-3">
+      <div class="animate font-mono text-xs tracking-wide opacity-65">
+        {categoryLabels[project.data.category]}
+      </div>
+      <h1
+        class="animate text-3xl font-semibold tracking-tight text-black dark:text-white"
+      >
+        {project.data.title}
+      </h1>
+      <p class="animate max-w-[60ch] leading-7 text-pretty">
+        {project.data.description}
+      </p>
+      {
+        (project.data.websiteURL || project.data.repoURL) && (
+          <nav class="animate flex flex-wrap items-center gap-2 pt-1">
+            {project.data.websiteURL && (
+              <Link
+                href={project.data.websiteURL}
+                external
+                aria-label={`访问 ${project.data.title}`}
+              >
+                访问项目
+              </Link>
+            )}
+            {project.data.websiteURL && project.data.repoURL && <span>/</span>}
+            {project.data.repoURL && (
+              <Link
+                href={project.data.repoURL}
+                external
+                aria-label={`查看 ${project.data.title} 源码`}
+              >
+                查看源码
+              </Link>
+            )}
+          </nav>
+        )
+      }
+    </header>
+
+    {
+      headings.length > 0 && (
+        <div class="lg:hidden">
+          <TableOfContents headings={headings} />
+        </div>
+      )
+    }
+    {headings.length > 0 && <TocSidebar headings={headings} />}
+    <article class="animate">
+      <Content />
+    </article>
+  </Container>
+</Layout>

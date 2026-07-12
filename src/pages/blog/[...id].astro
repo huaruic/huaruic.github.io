@@ -74,7 +74,7 @@ const jsonLd = JSON.stringify({
   publishedTime={post.data.date}
   modifiedTime={post.data.updatedDate}
 >
-  <script type="application/ld+json" set:html={jsonLd} />
+  <script is:inline type="application/ld+json" set:html={jsonLd} />
   <Container>
     <div class="animate">
       <BackToPrevious href="/blog">返回博客</BackToPrevious>
@@ -111,7 +111,7 @@ const jsonLd = JSON.stringify({
     </div>
     {
       headings.length > 0 && (
-        <div class="xl:hidden">
+        <div class="lg:hidden">
           <TableOfContents headings={headings} />
         </div>
       )

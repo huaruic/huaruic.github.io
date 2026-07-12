@@ -24,3 +24,12 @@ export function readingTime(html: string) {
   const readingTimeMinutes = (cjkCount / 400 + wordCount / 200 + 1).toFixed();
   return `${readingTimeMinutes} 分钟`;
 }
+
+export function dateRange(startDate: Date, endDate: Date | string): string {
+  const formatMonth = (date: Date) =>
+    `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+  const end = typeof endDate === "string" ? endDate : formatMonth(endDate);
+
+  return `${formatMonth(startDate)} — ${end}`;
+}

@@ -1,0 +1,71 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Link from "@components/Link.astro";
+import { WORK } from "@consts";
+import { dateRange } from "@lib/utils";
+
+const collection = (await getCollection("work")).sort(
+  (a, b) => b.data.dateStart.valueOf() - a.data.dateStart.valueOf()
+);
+
+const work = await Promise.all(
+  collection.map(async entry => {
+    const { Content } = await render(entry);
+    return { ...entry, Content };
+  })
+);
+---
+
+<Layout title={WORK.TITLE} description={WORK.DESCRIPTION}>
+  <Container>
+    <div class="space-y-12">
+      <header class="animate space-y-3">
+        <h1
+          class="text-xl font-semibold tracking-tight text-black dark:text-white"
+        >
+          工作经历
+        </h1>
+        <p class="max-w-[60ch] leading-7 text-pretty">
+          从大型互联网平台的后端系统，到 AI-native
+          产品的从零构建，我持续在工程、产品与协作之间拓宽自己的边界。
+        </p>
+      </header>
+
+      <ol class="flex flex-col gap-12">
+        {
+          work.map(entry => (
+            <li class="animate space-y-4">
+              <div class="space-y-1">
+                <div class="font-mono text-xs tabular-nums opacity-65">
+                  {dateRange(entry.data.dateStart, entry.data.dateEnd)}
+                </div>
+                <h2 class="font-semibold text-black dark:text-white">
+                  {entry.data.websiteURL ? (
+                    <Link
+                      href={entry.data.websiteURL}
+                      external
+                      underline={false}
+                    >
+                      {entry.data.company}
+                    </Link>
+                  ) : (
+                    entry.data.company
+                  )}
+                </h2>
+                <p class="text-sm opacity-75">
+                  {entry.data.role}
+                  {entry.data.location && ` · ${entry.data.location}`}
+                </p>
+              </div>
+              <article class="prose-sm">
+                <entry.Content />
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </Container>
+</Layout>

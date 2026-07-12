@@ -7,13 +7,30 @@ import { SITE } from "@consts";
 <header transition:persist>
   <Container>
     <div class="flex flex-wrap justify-between gap-y-2">
-      <Link href="/" underline={false}>
-        <div class="font-semibold">
-          {SITE.TITLE}
+      <Link href="/" underline={false} aria-label={SITE.TITLE}>
+        <div class="flex items-center gap-2 font-semibold">
+          <img
+            src="/ernest-avatar.png"
+            alt=""
+            width="24"
+            height="24"
+            class="size-6 rounded-md object-cover ring-1 ring-black/10 dark:ring-white/15"
+          />
+          <span class="hidden sm:inline" aria-hidden="true">
+            {SITE.TITLE}
+          </span>
         </div>
       </Link>
       <nav class="flex items-center gap-1 text-sm">
         <Link href="/blog">博客</Link>
+        <span>
+          {`/`}
+        </span>
+        <Link href="/work">经历</Link>
+        <span>
+          {`/`}
+        </span>
+        <Link href="/projects">项目</Link>
         <span>
           {`/`}
         </span>

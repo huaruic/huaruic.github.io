@@ -19,7 +19,7 @@ pnpm format         # prettier --write (format:check to verify; CI enforces it)
 
 No tests. Verification = `pnpm build` passing (includes type-checking via `astro check`).
 
-## Writing posts
+## Content
 
 Posts live in `src/content/blog/*.md` (URL: `/blog/<filename>/`). Frontmatter schema is in `src/content.config.ts`:
 
@@ -28,11 +28,13 @@ Posts live in `src/content/blog/*.md` (URL: `/blog/<filename>/`). Frontmatter sc
 
 Publishing = commit the markdown and push to `master`; GitHub Actions builds and deploys.
 
+Projects live in `src/content/projects/*.md` and render at `/projects/<filename>/`. Work entries live in `src/content/work/*.md` and are collected on `/work/`. Their schemas and homepage ordering fields are also defined in `src/content.config.ts`.
+
 ## Architecture
 
 - `src/consts.ts` — site title/description/email/socials, posts-per-homepage
 - `src/content.config.ts` — blog collection (glob loader) + zod schema
-- `src/pages/` — routes: index (bio + latest posts), blog, tags, rss, 404
+- `src/pages/` — routes: index (bio + projects + work + latest posts), projects, work, blog, tags, rss, 404
 - `src/components/` — Head (SEO/OG), Header, search (Pagefind modal), TOC, post navigation
 - `src/styles/global.css` — Tailwind theme; CJK font stack and 1.9 line-height for Chinese prose
 - `astro.config.mjs` — site URL, sitemap/mdx/pagefind integrations, shiki css-variables theme
@@ -42,7 +44,7 @@ Publishing = commit the markdown and push to `master`; GitHub Actions builds and
 
 Kept deliberately different from the upstream theme — do not "restore" these when pulling theme updates:
 
-- Projects collection/pages and Giscus comments removed entirely
+- Giscus comments remain removed; project and work collections are enabled for the portfolio sections
 - `lang="zh-CN"` in Layout; UI strings translated to Chinese
 - `TableOfContents.astro` buildToc fixed to tolerate skipped heading levels (upstream crashes on h3-without-h2)
 - ESLint dropped; Prettier only (`.prettierrc.mjs`)

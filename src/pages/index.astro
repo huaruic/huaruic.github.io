@@ -5,38 +5,108 @@ import { SITE, HOME, SOCIALS } from "@consts";
 import ArrowCard from "@components/ArrowCard.astro";
 import Link from "@components/Link.astro";
 import { getCollection } from "astro:content";
+import { dateRange } from "@lib/utils";
 
 const blog = (await getCollection("blog"))
   .filter(post => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
+
+const projects = (await getCollection("projects"))
+  .filter(
+    project => !project.data.draft && typeof project.data.featured === "number"
+  )
+  .sort(
+    (a, b) =>
+      (a.data.featured ?? Number.POSITIVE_INFINITY) -
+      (b.data.featured ?? Number.POSITIVE_INFINITY)
+  )
+  .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE);
+
+const work = (await getCollection("work"))
+  .sort((a, b) => b.data.dateStart.valueOf() - a.data.dateStart.valueOf())
+  .slice(0, SITE.NUM_WORKS_ON_HOMEPAGE);
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <Container>
     <aside data-pagefind-ignore>
-      <h1 class="font-semibold text-black dark:text-white">Always Exploring</h1>
+      <h1
+        class="text-xl font-semibold tracking-tight text-black dark:text-white"
+      >
+        你好，我是 Ernest。
+      </h1>
       <div class="space-y-16">
         <section>
           <article class="space-y-4">
-            <span>
-              <p>这里是 Ernest 的个人博客。</p>
-              <p>
-                我会在这里记录工作、生活、阅读、旅行，以及一些阶段性的复盘和思考。
-              </p>
-            </span>
-            <span class="animate">
-              <p>
-                写下来是为了在未来某个时刻回头看，知道自己曾经如何理解世界，又如何慢慢发生变化。
-              </p>
-            </span>
+            <p>
+              我是一名专注 AI Agent 的独立开发者，正在把智能体从命令行和 Demo
+              变成普通人真正能用的产品。我关注本地运行、长期记忆、工具调用与多渠道协作，也在探索怎样让
+              Agent 更可靠地理解上下文、执行任务并与人一起工作。
+            </p>
+            <p class="animate">
+              目前主要在做 <Link href="/projects/catclaw">CatClaw</Link> 和 <Link
+                href="/projects/clawsetup">ClawSetup</Link
+              >：前者是一款隐私优先的本地 AI Agent 桌面应用，后者让 macOS
+              用户不用终端也能安装和配置 OpenClaw。
+            </p>
+            <p class="animate">
+              这里收录我在 Agent
+              产品与工程上的实践，也记录工作、阅读、旅行，以及阶段性的复盘与思考。
+            </p>
           </article>
         </section>
 
         <section class="animate space-y-6">
           <div class="flex flex-wrap items-center justify-between gap-y-2">
+            <h2 class="font-semibold text-black dark:text-white">近期项目</h2>
+            <Link href="/projects">查看全部项目</Link>
+          </div>
+          <ul class="not-prose flex flex-col gap-4">
+            {
+              projects.map(project => (
+                <li>
+                  <ArrowCard entry={project} />
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="animate space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-y-2">
+            <h2 class="font-semibold text-black dark:text-white">工作经历</h2>
+            <Link href="/work">查看全部经历</Link>
+          </div>
+          <ol class="not-prose flex flex-col gap-7">
+            {
+              work.map(entry => (
+                <li class="space-y-2">
+                  <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <div class="font-semibold text-black dark:text-white">
+                      {entry.data.company}
+                    </div>
+                    <div class="font-mono text-xs tabular-nums opacity-65">
+                      {dateRange(entry.data.dateStart, entry.data.dateEnd)}
+                    </div>
+                  </div>
+                  <div class="text-sm opacity-75">
+                    {entry.data.role}
+                    {entry.data.location && ` · ${entry.data.location}`}
+                  </div>
+                  <p class="text-sm leading-6 text-pretty">
+                    {entry.data.summary}
+                  </p>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section class="animate space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-y-2">
             <h2 class="font-semibold text-black dark:text-white">最新文章</h2>
-            <Link href="/blog"> 查看全部 </Link>
+            <Link href="/blog">查看全部文章</Link>
           </div>
           <ul class="not-prose flex flex-col gap-4">
             {
@@ -52,7 +122,10 @@ const blog = (await getCollection("blog"))
         <section class="animate space-y-4">
           <h2 class="font-semibold text-black dark:text-white">联系我</h2>
           <article>
-            <p>想交流或者只是打个招呼，欢迎通过社交媒体或邮件找到我。</p>
+            <p>
+              如果你也在构建 AI Agent、本地优先应用或 AI-native
+              开发工作流，或者只是想打个招呼，欢迎通过社交媒体或邮件联系我。
+            </p>
           </article>
           <ul class="not-prose flex flex-wrap gap-2">
             {

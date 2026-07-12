@@ -32,15 +32,15 @@ function buildToc(headings: Heading[]) {
 }
 ---
 
-<details
-  open
-  class="animate group rounded-lg border border-black/15 dark:border-white/20"
->
+<details class="animate group fixed top-20 left-3 z-40 lg:hidden">
   <summary
-    class="cursor-pointer rounded-t-lg px-3 py-1.5 font-medium transition-colors group-open:bg-black/5 hover:bg-black/5 dark:group-open:bg-white/5 hover:dark:bg-white/5"
+    class="w-fit cursor-pointer list-none rounded-md border border-black/15 bg-neutral-100/90 px-3 py-1.5 text-sm font-medium shadow-sm backdrop-blur-md transition-colors hover:bg-neutral-200/90 dark:border-white/20 dark:bg-neutral-900/90 dark:hover:bg-neutral-800/90"
     >目录</summary
   >
-  <nav>
+  <nav
+    class="mt-2 max-h-[calc(100dvh-9rem)] w-72 max-w-[calc(100vw-1.5rem)] overflow-y-auto rounded-lg border border-black/15 bg-neutral-100/95 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-neutral-900/95"
+    onclick="this.closest('details')?.removeAttribute('open')"
+  >
     <ul class="py-3">
       {toc.map(heading => <TableOfContentsHeading heading={heading} />)}
     </ul>

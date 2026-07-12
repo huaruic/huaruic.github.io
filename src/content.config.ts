@@ -13,4 +13,31 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+const projects = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    category: z.enum(["ai", "onchain", "community", "side"]),
+    order: z.number(),
+    featured: z.number().optional(),
+    draft: z.boolean().optional(),
+    websiteURL: z.string().url().optional(),
+    repoURL: z.string().url().optional(),
+  }),
+});
+
+const work = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/work" }),
+  schema: z.object({
+    company: z.string(),
+    role: z.string(),
+    location: z.string().optional(),
+    summary: z.string(),
+    dateStart: z.coerce.date(),
+    dateEnd: z.union([z.coerce.date(), z.string()]),
+    websiteURL: z.string().url().optional(),
+  }),
+});
+
+export const collections = { blog, projects, work };
